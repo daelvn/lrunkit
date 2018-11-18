@@ -1,8 +1,16 @@
 # lrunkit
 Small library for executing commands faster
 ## Usage
-### `execute = (command, error_on_fail=false, error_on_signal=false) -> runnable:{}`
-Creates a runnable command using os.execute. Run it using `runnable\run!` (Lua: `runnable:run()`)
+### `execute = (command, options={}) -> runnable:{}`
+Creates a runnable command using os.execute. Run it using `runnable!` (Lua: `runnable()`)
+#### Options
+
+- `error_on_fail`: Will exit at error
+- `error_on_signal`: Will exit if terminated
+- `silent`_: Runs the command silently
+
+### `immediate = (command, options={})`
+Same as execute, but runs instantly.
 ### `interact = (command) -> streamable:{}`
 Creates a streamable command using io.popen.
 
@@ -11,6 +19,6 @@ Creates a streamable command using io.popen.
 - Write with `streamable\write str`
 - Close with `streamable\close!`
 
-### `chain = {} -> chain:{}`
-Returns a chain of runnable commands. Use it as `ch = chain runnable1, runnable2, runnable3` and run it with `ch\run!`
+### `chain = {} -> runchain:->`
+Returns a chain of runnable commands. Use it as `ch = chain runnable1, runnable2, runnable3` and run it with `ch!`
 

@@ -6,18 +6,23 @@
 -- final      = chain runnable, runnable
 -- streamable = interact cmd
 
-execute = (command, error_on_fail=false, error_on_signal=false) -> {
+execute = (command, options={}) -> setmetatable {
   :command
 
   status: "unrun"
   code:   false
   signal: false
 
-  :error_on_fail
-  :error_on_signal
-
-  run: =>
-    ok, sig = os.execute @command
+  error_on_fail:   options and options.error_on_fail   or false
+  error_on_signal: options and options.error_on_signal or false
+  silent:          options and options.silent          or false
+}, {
+  __call: =>
+    command = if @silent
+      @command .. " > /dev/null 2> /dev/null"
+    else
+      @command
+    ok, sig = os.execute command
     switch ok
       when "exit"
         @code = sig
@@ -26,6 +31,8 @@ execute = (command, error_on_fail=false, error_on_signal=false) -> {
         @signal = sig
         if @error_on_signal then error "#{command} terminated with signal #{signal}"
 }
+
+immediate = (command, options) -> (execute command, options)!
 
 interact = (command) -> {
   :command
@@ -44,14 +51,10 @@ interact = (command) -> {
 }
 
 chain = setmetatable {
-  tree: {}
-
-  run: => for runnable in *@tree do runnable\run!
 }, {
-  __call: (...) =>
-    for runnable in *{...}
-      table.insert @.tree, runnable
-    return @
+  __call: (t, ...) ->
+    tree = [runnable for runnable in *{...}]
+    -> for runnable in *tree do runnable!
 }
 
-{ :execute, :interact, :chain }
+{ :execute, :interact, :immediate, :chain }

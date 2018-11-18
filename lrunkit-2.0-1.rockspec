@@ -1,9 +1,9 @@
 package = "lrunkit"
-version = "1.0-1"
+version = '2.0-1'
 
 source  = {
   url   = "https://github.com/daelvn/lrunkit",
-  tag   = "v1.0"
+  tag   = "v2.0"
 }
 
 description = {

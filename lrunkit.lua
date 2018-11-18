@@ -1,20 +1,24 @@
 local execute
-execute = function(command, error_on_fail, error_on_signal)
-  if error_on_fail == nil then
-    error_on_fail = false
+execute = function(command, options)
+  if options == nil then
+    options = { }
   end
-  if error_on_signal == nil then
-    error_on_signal = false
-  end
-  return {
+  return setmetatable({
     command = command,
     status = "unrun",
     code = false,
     signal = false,
-    error_on_fail = error_on_fail,
-    error_on_signal = error_on_signal,
-    run = function(self)
-      local ok, sig = os.execute(self.command)
+    error_on_fail = options and options.error_on_fail or false,
+    error_on_signal = options and options.error_on_signal or false,
+    silent = options and options.silent or false
+  }, {
+    __call = function(self)
+      if self.silent then
+        command = self.command .. " > /dev/null 2> /dev/null"
+      else
+        command = self.command
+      end
+      local ok, sig = os.execute(command)
       local _exp_0 = ok
       if "exit" == _exp_0 then
         self.code = sig
@@ -28,7 +32,11 @@ execute = function(command, error_on_fail, error_on_signal)
         end
       end
     end
-  }
+  })
+end
+local immediate
+immediate = function(command, options)
+  return (execute(command, options))()
 end
 local interact
 interact = function(command)
@@ -54,29 +62,33 @@ interact = function(command)
     end
   }
 end
-local chain = setmetatable({
-  tree = { },
-  run = function(self)
-    local _list_0 = self.tree
-    for _index_0 = 1, #_list_0 do
-      local runnable = _list_0[_index_0]
-      runnable:run()
+local chain = setmetatable({ }, {
+  __call = function(t, ...)
+    local tree
+    do
+      local _accum_0 = { }
+      local _len_0 = 1
+      local _list_0 = {
+        ...
+      }
+      for _index_0 = 1, #_list_0 do
+        local runnable = _list_0[_index_0]
+        _accum_0[_len_0] = runnable
+        _len_0 = _len_0 + 1
+      end
+      tree = _accum_0
     end
-  end
-}, {
-  __call = function(self, ...)
-    local _list_0 = {
-      ...
-    }
-    for _index_0 = 1, #_list_0 do
-      local runnable = _list_0[_index_0]
-      table.insert(self.tree, runnable)
+    return function()
+      for _index_0 = 1, #tree do
+        local runnable = tree[_index_0]
+        runnable()
+      end
     end
-    return self
   end
 })
 return {
   execute = execute,
   interact = interact,
+  immediate = immediate,
   chain = chain
 }
