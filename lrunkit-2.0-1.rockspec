@@ -2,7 +2,7 @@ package = "lrunkit"
 version = '2.0-1'
 
 source  = {
-  url   = "https://github.com/daelvn/lrunkit",
+  url   = "git://github.com/daelvn/lrunkit",
   tag   = "v2.0"
 }
 
