@@ -1,6 +1,21 @@
 # lrunkit
 Small library for executing commands faster
-## Usage
+
+## Usage (v3)
+To import the v3 part of the library, use `import command, capture, interact from require "lrunkit.v3"`
+### `command = (cmd:string) -> (args:...) -> signal:number`
+When you first apply it with a string, it will create a command holder, to which you can pass
+arguments, when you pass arguments (or not), it runs it and returns a signal.
+### `capture = (cmd:string) -> (args:...) -> result:string`
+Exactly the same as `command`, but instead returns stdout in the end.
+### `interact = (cmd:string) -> (args:...) -> handle:IO`
+Returns a handle as if it were io.popen.
+- `\open (mode:string)`
+- `\read (format:string)`
+- `\write (any:string)`
+- `\close ()`
+
+## Usage (v2 - default)
 ### `execute = (command, options={}) -> runnable:{}`
 Creates a runnable command using os.execute. Run it using `runnable!` (Lua: `runnable()`)
 #### Options

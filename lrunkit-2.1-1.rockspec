@@ -1,9 +1,9 @@
 package = "lrunkit"
-version = '2.0-1'
+version = '2.1-1'
 
 source  = {
   url   = "git://github.com/daelvn/lrunkit",
-  tag   = "v2.0"
+  tag   = "v2.1"
 }
 
 description = {
@@ -19,6 +19,7 @@ description = {
 build = {
   type    = "builtin",
   modules = {
-    lrunkit = "lrunkit.lua"
+    ["lrunkit.init"] = "lrunkit/init.lua",
+    ["lrunkit.v3"]   = "lrunkit/v3.lua"
   },
 }
