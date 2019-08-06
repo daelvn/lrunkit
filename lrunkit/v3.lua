@@ -31,7 +31,7 @@ capture = function(cmd)
     local result
     do
       local _with_0 = io.popen(cmd, "r")
-      result = handle:read("*a")
+      result = _with_0:read("*a")
       _with_0:close()
     end
     return result

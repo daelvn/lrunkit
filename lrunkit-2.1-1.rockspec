@@ -1,5 +1,5 @@
 package = "lrunkit"
-version = '2.1-1'
+version = '2.1-2'
 
 source  = {
   url   = "git://github.com/daelvn/lrunkit",
@@ -13,7 +13,6 @@ description = {
     using wrappers for os.execute and io.popen.
   ]],
   homepage = "https://github.com/daelvn/lrunkit",
-  license  = "MIT/X11"
 }
 
 build = {

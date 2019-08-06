@@ -21,7 +21,7 @@ capture = (cmd) ->
     --
     local result
     with io.popen cmd, "r"
-      result = handle\read "*a"
+      result = \read "*a"
       \close!
     result
 
